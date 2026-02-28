@@ -1,6 +1,9 @@
+import AddSection from "@/components/sites/home/AddSection";
 import Banner from "@/components/sites/home/Banner";
 import BrandArea from "@/components/sites/home/BrandArea";
 import Categories from "@/components/sites/home/Categories";
+import FeatureJobs from "@/components/sites/home/FeatureJobs";
+import LatestJob from "@/components/sites/home/LatestJob";
 
 const Home = () => {
   return (
@@ -8,6 +11,9 @@ const Home = () => {
       <Banner />
       <BrandArea />
       <Categories />
+      <AddSection />
+      <FeatureJobs />
+      <LatestJob />
     </div>
   );
 };

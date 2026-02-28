@@ -22,6 +22,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const menuVariants = {
@@ -53,13 +60,17 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] z-50 transition-all duration-300 ${
-        scrolled ? "bg-white shadow-md py-4" : "bg-transparent py-6"
+        scrolled ? "bg-white  py-4" : "bg-transparent py-6"
       }`}
     >
       <div className="section-padding-x flex items-center justify-between">
         {/* Left side: Logo */}
         <div className="flex items-center gap-12">
-          <Link to="/" className="flex items-center gap-2">
+          <Link
+            to="/"
+            onClick={scrollToTop}
+            className="flex items-center gap-2"
+          >
             <img
               src={Logo}
               alt="QuickHire"
@@ -69,10 +80,10 @@ const Navbar = () => {
 
           {/* Nav Links (Desktop) */}
           <div className="hidden lg:flex items-center gap-8 font-epilogue font-medium text-[#515B6F]">
-            <Link to="/jobs" className="hover:text-Primary transition-all">
+            <Link to="#" className="hover:text-Primary transition-all">
               Find Jobs
             </Link>
-            <Link to="/companies" className="hover:text-Primary transition-all">
+            <Link to="#" className="hover:text-Primary transition-all">
               Browse Companies
             </Link>
           </div>
