@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Logo from "@/assets/images/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setToken } from "@/redux/slices/authSlice";
+import useMutationClient from "@/hooks/useMutationClient";
+import CommonLoader from "@/components/common/CommonLoader";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,10 +14,25 @@ const Login = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { mutate, isPending } = useMutationClient({
+    url: "/auth/login",
+    method: "post",
+    successMessage: "Welcome Back!",
+    onSuccess: (res) => {
+      const data = res?.data || res;
+      if (data.success) {
+        dispatch(setToken({ token: data.token, user: data.user }));
+        navigate("/dashboard");
+      }
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login submitted:", formData);
-    // Future: API integration
+    mutate({ data: formData });
   };
 
   return (
@@ -47,6 +66,7 @@ const Login = () => {
                 setFormData({ ...formData, email: e.target.value })
               }
               required
+              disabled={isPending}
             />
           </div>
 
@@ -64,10 +84,12 @@ const Login = () => {
                   setFormData({ ...formData, password: e.target.value })
                 }
                 required
+                disabled={isPending}
               />
               <button
                 type="button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C8493]"
+                disabled={isPending}
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -77,9 +99,10 @@ const Login = () => {
 
           <button
             type="submit"
-            className="bg-Primary text-white py-4 rounded-lg font-bold font-epilogue hover:bg-[#3b36c4] shadow-lg shadow-[#4640de]/20 transition-all mt-2"
+            className="bg-Primary text-white h-[40px] rounded-lg font-bold font-epilogue hover:bg-[#3b36c4] shadow-lg shadow-[#4640de]/20 transition-all mt-2 disabled:opacity-70 flex items-center justify-center min-h-[56px]"
+            disabled={isPending}
           >
-            Login
+            {isPending ? <CommonLoader /> : "Login"}
           </button>
         </form>
 

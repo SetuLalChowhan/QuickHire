@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Menu, Bell, User, Search } from "lucide-react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 const CommonNavbar = ({ open, setOpen }) => {
+  const user = useSelector(selectCurrentUser);
+
   return (
-    <header className="h-[80px] bg-white border-b border-[#D6DDEB] px-8 flex items-center justify-between sticky top-0 z-[100] font-epilogue z-50">
+    <header className="h-[80px] bg-white border-b border-[#D6DDEB] px-8 flex items-center justify-between sticky top-0 font-epilogue z-[100]">
       {/* Left - Mobile Menu Toggle */}
       <div className="flex items-center gap-4">
         <button
@@ -25,14 +29,6 @@ const CommonNavbar = ({ open, setOpen }) => {
 
       {/* Right - Profile & Notifications */}
       <div className="flex items-center gap-6">
-        {/* Post Job Button - Mobile Only or extra visibility */}
-        {/* <Link
-          to="/dashboard"
-          className="hidden lg:flex items-center gap-2 bg-Primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-[#3b36c4] shadow-lg shadow-[#4640de]/20 transition-all"
-        >
-          Post a Job
-        </Link> */}
-
         <button className="relative p-2 text-[#25324B] hover:bg-[#F8F9FB] rounded-lg transition-colors group">
           <Bell size={24} />
           <span className="absolute top-2 right-2 w-2 h-2 bg-[#FF6550] rounded-full border-2 border-white group-hover:scale-110 transition-transform"></span>
@@ -46,10 +42,10 @@ const CommonNavbar = ({ open, setOpen }) => {
           </div>
           <div className="hidden sm:flex flex-col">
             <span className="font-bold text-[#25324B] leading-none text-sm group-hover:text-Primary transition-colors">
-              Admin QuickHire
+              {user?.name || "Admin QuickHire"}
             </span>
             <span className="text-[#7C8493] text-xs font-medium mt-1 uppercase tracking-wider">
-              Super Admin
+              {user?.role || "Super Admin"}
             </span>
           </div>
         </div>

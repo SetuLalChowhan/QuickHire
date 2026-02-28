@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store";
+import { Slide, ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")).render(
           <ReactQueryDevtools initialIsOpen={false} />
         </PersistGate>
       </Provider>
+      <ToastContainer position="top-center" draggable transition={Slide} />
     </QueryClientProvider>
   </StrictMode>,
 );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   LogOut,
@@ -10,10 +10,21 @@ import {
   Settings,
 } from "lucide-react";
 import Logo from "@/assets/images/Logo.png";
+import { useDispatch } from "react-redux";
+import { clearAuth } from "@/redux/slices/authSlice";
+import { toast } from "react-toastify";
 
 const SideBar = ({ sidebar, open, setOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [activeParentIndex, setActiveParentIndex] = useState(null);
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
 
   useEffect(() => {
     sidebar.forEach((item, index) => {
@@ -142,7 +153,10 @@ const SideBar = ({ sidebar, open, setOpen }) => {
 
         {/* Bottom Section - Logout */}
         <div className="p-4 border-t border-[#D6DDEB]">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6550] font-epilogue font-bold hover:bg-[#FF6550]/10 transition-all">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6550] font-epilogue font-bold hover:bg-[#FF6550]/10 transition-all"
+          >
             <LogOut size={20} />
             Log Out
           </button>
