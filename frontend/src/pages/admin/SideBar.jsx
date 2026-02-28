@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { IoLogOutOutline } from "react-icons/io5";
-import { FaReact } from "react-icons/fa6";
+import {
+  ChevronDown,
+  LogOut,
+  LayoutDashboard,
+  Briefcase,
+  PlusCircle,
+  Users,
+  Settings,
+} from "lucide-react";
+import Logo from "@/assets/images/Logo.png";
+
 const SideBar = ({ sidebar, open, setOpen }) => {
   const location = useLocation();
   const [activeParentIndex, setActiveParentIndex] = useState(null);
@@ -11,7 +19,7 @@ const SideBar = ({ sidebar, open, setOpen }) => {
     sidebar.forEach((item, index) => {
       if (item.sublink) {
         const activeSub = item.sublink.find(
-          (sub) => sub.path === location.pathname
+          (sub) => sub.path === location.pathname,
         );
         if (activeSub) {
           setActiveParentIndex(index);
@@ -27,7 +35,7 @@ const SideBar = ({ sidebar, open, setOpen }) => {
   };
 
   const isParentActive = (item) => {
-    if (!item.sublink) return isActive(item.path);
+    if (!item.sublink) return isActive(item.activePaths);
     return item.sublink.some((sub) => isActive(sub.path));
   };
 
@@ -37,116 +45,109 @@ const SideBar = ({ sidebar, open, setOpen }) => {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay for mobile */}
       <div
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300 ease-in-out ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
-        } xl:hidden z-50`}
+        } xl:hidden z-[110]`}
         onClick={() => setOpen(false)}
       ></div>
 
       {/* Sidebar */}
-      <div
-        className={`h-full py-6 ${
-          open
-            ? "left-0 top-0 w-[320px] z-[220] shadow-lg bg-[#1F3C37] overflow-y-auto"
-            : "-left-full xl:w-[350px] w-[320px]"
-        }
-        bg-[#ddd] backdrop-blur-md lg:px-8 px-4 flex flex-col gap-8 shadow-md xlg:static fixed transition-all duration-300`}
+      <aside
+        className={`fixed xl:static inset-y-0 left-0 h-full w-[280px] bg-white border-r border-[#D6DDEB] flex flex-col transition-transform duration-300 ease-in-out z-[120] ${
+          open ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
+        }`}
       >
-        {/* Logo */}
-        <Link to={"/"}>
-          <div className="flex justify-center items-center">
-            {/* <img src={} alt="Safe" className="h-24 object-contain" /> */}
-            <span>
-              <FaReact size={40} color=" black" />
-            </span>
-          </div>
-        </Link>
+        {/* Logo Section */}
+        <div className="p-8 pb-4">
+          <Link to="/" className="flex items-center gap-2">
+            <img src={Logo} alt="QuickHire" className="h-8 object-contain" />
+            {/* <span className="font-clash-display text-xl font-bold tracking-tight text-[#25324B]">
+              QuickHire
+            </span> */}
+          </Link>
+        </div>
 
-        {/* Navigation */}
-        <div className="flex flex-col gap-3">
-          {sidebar?.map((item, index) => {
-            const parentActive = isParentActive(item);
-            return !item?.sublink ? (
-              <Link
-                key={index}
-                to={item?.path}
-                onClick={() => {
-                  setActiveParentIndex(null);
-                  setOpen(false);
-                }}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-colors duration-200 ${
-                  isActive(item?.activePaths)
-                    ? "bg-[#FFF] text-[#3F6534]"
-                    : "text-[#FFF] hover:bg-[#466b55] hover:text-[#ffffff]"
-                }`}
-              >
-                <span className="text-lg">{item?.icon}</span>
-                {item?.text}
-              </Link>
-            ) : (
-              <div className="relative" key={index}>
-                {/* Parent link */}
-                <div
-                  className={`flex items-center justify-between px-4 py-2 cursor-pointer w-full rounded-lg transition-all duration-200 ${
-                    parentActive
-                      ? "bg-[#253E8E] text-white"
-                      : "text-gray-700 hover:bg-[#E3ECFF] hover:text-[#253E8E]"
+        {/* Navigation Section */}
+        <nav className="flex-1 px-4 py-6 overflow-y-auto">
+          <div className="flex flex-col gap-2">
+            {sidebar?.map((item, index) => {
+              const active = isParentActive(item);
+              return !item?.sublink ? (
+                <Link
+                  key={index}
+                  to={item?.path}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg font-epilogue font-semibold transition-all duration-200 ${
+                    active
+                      ? "bg-Primary text-white shadow-lg shadow-[#4640de]/20"
+                      : "text-[#7C8493] hover:bg-[#F8F9FB] hover:text-Primary"
                   }`}
-                  onClick={() => toggleSubmenu(index)}
+                  onClick={() => setOpen(false)}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">{item?.icon}</span>
-                    <p className="font-medium">{item?.text}</p>
-                  </div>
-                  <span
-                    className={`transform transition-transform duration-300 ${
-                      activeParentIndex === index ? "rotate-180" : "rotate-0"
+                  <span className={active ? "text-white" : "text-[#7C8493]"}>
+                    {item?.icon}
+                  </span>
+                  {item?.text}
+                </Link>
+              ) : (
+                <div className="relative" key={index}>
+                  <button
+                    className={`flex items-center justify-between px-4 py-3 cursor-pointer w-full rounded-lg font-epilogue font-semibold transition-all duration-200 ${
+                      active
+                        ? "bg-Primary/10 text-Primary border border-Primary/20"
+                        : "text-[#7C8493] hover:bg-[#F8F9FB] hover:text-Primary"
+                    }`}
+                    onClick={() => toggleSubmenu(index)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span>{item?.icon}</span>
+                      {item?.text}
+                    </div>
+                    <ChevronDown
+                      size={18}
+                      className={`transform transition-transform duration-300 ${
+                        activeParentIndex === index ? "rotate-180" : "rotate-0"
+                      }`}
+                    />
+                  </button>
+
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      activeParentIndex === index
+                        ? "max-h-[300px] mt-2 opacity-100"
+                        : "max-h-0 opacity-0"
                     }`}
                   >
-                    <MdKeyboardArrowDown size={20} />
-                  </span>
-                </div>
-
-                {/* Sublinks dropdown */}
-                <div
-                  className={`transition-all duration-300 ease-in-out overflow-hidden px-4 bg-white rounded-lg ${
-                    activeParentIndex === index
-                      ? "max-h-[500px] py-4 opacity-100 translate-y-0"
-                      : "max-h-0 opacity-0 -translate-y-2"
-                  }`}
-                >
-                  <div className="flex flex-col gap-1">
-                    {item?.sublink?.map((value, subIndex) => (
+                    {item?.sublink?.map((sub, i) => (
                       <Link
-                        key={subIndex}
-                        to={value?.path}
-                        className={`block px-4 py-2 rounded-md transition-colors duration-200 ${
-                          isActive(item?.activePaths)
-                            ? "text-black font-medium bg-[#F0F4FF]"
-                            : "text-[#5A5C5F] font-normal hover:bg-[#F0F4FF]"
+                        key={i}
+                        to={sub.path}
+                        className={`flex items-center gap-3 pl-12 py-2 pr-4 text-[14px] font-epilogue font-medium transition-colors ${
+                          isActive(sub.path)
+                            ? "text-Primary"
+                            : "text-[#7C8493] hover:text-Primary"
                         }`}
                         onClick={() => setOpen(false)}
                       >
-                        {value?.text}
+                        {sub.text}
                       </Link>
                     ))}
                   </div>
                 </div>
-              </div>
-            );
-          })}
-
-          {/* Logout */}
-          <div className="flex absolute bottom-6 w-[80%] items-center gap-3  cursor-pointer  transition  rounded-lg px-4 py-2">
-            <span>
-              <IoLogOutOutline color="black" />
-            </span>
-            <p className="font-medium ">Log Out</p>
+              );
+            })}
           </div>
+        </nav>
+
+        {/* Bottom Section - Logout */}
+        <div className="p-4 border-t border-[#D6DDEB]">
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6550] font-epilogue font-bold hover:bg-[#FF6550]/10 transition-all">
+            <LogOut size={20} />
+            Log Out
+          </button>
         </div>
-      </div>
+      </aside>
     </>
   );
 };

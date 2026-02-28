@@ -3,45 +3,61 @@ import SideBar from "@/pages/admin/SideBar";
 
 import React, { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
-import { useUserProfile } from "@/hooks/fetchUserProfile";
+import {
+  LayoutDashboard,
+  Briefcase,
+  PlusCircle,
+  Users,
+  Settings,
+  LogOut,
+} from "lucide-react";
+
 const AdminLayout = () => {
-  useUserProfile();
   const [Open, setOpen] = useState(false);
 
-  const sideBar = [
+  const sidebarData = [
     {
       id: 1,
-      icon: <MdDashboard />,
+      icon: <LayoutDashboard size={20} />,
       text: "Dashboard",
-      path: "/dashboard", // main path (optional, if you still want to keep it)
-      activePaths: [
-        "/dashboard",
-        "/dashboard/settings",
-        "/dashboard/analytics",
-      ], // all paths that should make this item active
+      path: "/dashboard",
+      activePaths: ["/dashboard"],
       sublink: false,
     },
-    {
-      id: 2,
-      icon: <MdDashboard />,
-      text: "Admin Management",
-      path: "/dashboard/admin-list",
-      sublink: [
-        {
-          id: 1,
-          text: "Admin List",
-          path: "/dashboard/admin-list",
-        },
-        {
-          id: 1,
-          text: "Add New Admin",
-          path: "/dashboard/asdasd",
-        },
-      ],
-    },
+    // {
+    //   id: 2,
+    //   icon: <Briefcase size={20} />,
+    //   text: "Manage Jobs",
+    //   path: "/dashboard",
+    //   activePaths: ["/dashboard/jobs"],
+    //   sublink: false,
+    // },
+    // {
+    //   id: 3,
+    //   icon: <PlusCircle size={20} />,
+    //   text: "Post a Job",
+    //   path: "/dashboard",
+    //   activePaths: ["/dashboard/post-job"],
+    //   sublink: false,
+    // },
+    // {
+    //   id: 4,
+    //   icon: <Users size={20} />,
+    //   text: "Applications",
+    //   path: "/dashboard",
+    //   activePaths: ["/dashboard/applications"],
+    //   sublink: false,
+    // },
+    // {
+    //   id: 5,
+    //   icon: <Settings size={20} />,
+    //   text: "Settings",
+    //   path: "/dashboard",
+    //   activePaths: ["/dashboard/settings"],
+    //   sublink: false,
+    // },
   ];
+
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({
@@ -49,16 +65,22 @@ const AdminLayout = () => {
       behavior: "smooth",
     });
   }, [location]);
+
   return (
     <>
       <ScrollRestoration />
-      <div className="flex  h-screen min-h-screen w-full">
-        <SideBar open={Open} setOpen={setOpen} sidebar={sideBar} />
-        <div className="flex-1 bg-dark text-white flex flex-col overflow-auto custom-scrollbar">
-          <div className=" flex flex-col lg:gap-10 gap-5 lg:py-6 py-3 lg:px-[30px] px-2.5 sm:px-5">
-            <CommonNavbar open={Open} setOpen={setOpen} />
-            <Outlet />
-          </div>
+      <div className="flex h-screen bg-[#F8F9FB] overflow-hidden">
+        {/* Sidebar stays fixed or slides on mobile */}
+        <SideBar open={Open} setOpen={setOpen} sidebar={sidebarData} />
+
+        <div className="flex-1 flex flex-col min-w-0">
+          <CommonNavbar open={Open} setOpen={setOpen} />
+
+          <main className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="max-w-[1200px] mx-auto">
+              <Outlet />
+            </div>
+          </main>
         </div>
       </div>
     </>
