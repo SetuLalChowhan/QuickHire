@@ -105,45 +105,8 @@ Run the frontend:
 
 ```bash
 npm run dev
-```
 
----
 
-## 🌐 Deployment Guide (Recommended)
-
-### **Backend (Render / Railway)**
-
-1. Host your `backend` folder on **Render.com**.
-2. Set the Environment Variables (`MONGO_URI`, `JWT_SECRET`) in the Render dashboard.
-3. Note your Render URL (e.g., `https://quickhire-api.onrender.com`).
-
-### **Frontend (Vercel)**
-
-1. Push your code to GitHub.
-2. Connect your repository to **Vercel**.
-3. Set the Root Directory to `frontend`.
-4. Add Environment Variables:
-   - `VITE_API_URL` = `https://your-render-url.com/api`
-   - `VITE_IMG_URL` = `https://your-render-url.com`
-5. Deploy!
-
----
-
-## 📂 Project Structure
-
-```text
-QuickHire/
-├── backend/            # Express.js API
-│   ├── controllers/    # API Logic
-│   ├── models/         # Database Schemas (Job, Application)
-│   ├── routes/         # Endpoint Definitions
-│   └── uploads/        # Local Image Storage
-└── frontend/           # React + Vite Frontend
-    ├── src/
-    │   ├── components/ # Reusable UI Components
-    │   ├── hooks/      # API Interacting Custom Hooks
-    │   └── pages/      # Route Pages
-```
 
 ---
 
