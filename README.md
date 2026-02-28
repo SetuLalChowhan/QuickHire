@@ -52,6 +52,10 @@ QuickHire is a sleek, responsive mini job board application built to streamline 
 
 ---
 
+Admin Credentials:
+Email:admin@example.com
+Password:admin123
+
 ## ⚙️ Local Setup Instructions
 
 ### 1. Prerequisites
@@ -113,3 +117,4 @@ npm run dev
 ## 📜 License
 
 Independent Developer Task - 2026.
+```
