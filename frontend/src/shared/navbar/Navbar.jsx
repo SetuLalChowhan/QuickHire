@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@/assets/images/Logo.png";
 import Hamburger from "@/assets/images/icon.png";
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsAuthenticated, clearAuth } from "@/redux/slices/authSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +29,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    navigate("/login");
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -60,7 +73,7 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] z-50 transition-all duration-300 ${
-        scrolled ? "bg-white  py-4" : "bg-transparent py-6"
+        scrolled || !isHome ? "bg-white py-4 shadow-sm" : "bg-transparent py-6"
       }`}
     >
       <div className="section-padding-x flex items-center justify-between">
@@ -78,9 +91,8 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Nav Links (Desktop) */}
           <div className="hidden lg:flex items-center gap-8 font-epilogue font-medium text-[#515B6F]">
-            <Link to="#" className="hover:text-Primary transition-all">
+            <Link to="/jobs" className="hover:text-Primary transition-all">
               Find Jobs
             </Link>
             <Link to="#" className="hover:text-Primary transition-all">
@@ -92,20 +104,41 @@ const Navbar = () => {
         {/* Right side (Desktop: Auth, Mobile: Hamburger) */}
         <div className="flex items-center">
           {/* Desktop Auth */}
-          <div className="hidden lg:flex items-center gap-2 font-epilogue border-l border-gray-100 pl-4 ml-4">
-            <Link
-              to="/login"
-              className="text-Primary font-bold px-6 py-3 hover:opacity-80 transition-opacity"
-            >
-              Login
-            </Link>
-            <div className="w-[1px] h-8 bg-gray-100 mx-2"></div>
-            <Link
-              to="/signup"
-              className="bg-Primary text-white px-8 py-3 rounded-[4px] hover:bg-[#3b36c4] shadow-lg shadow-[#4640de]/20 transition-all font-bold"
-            >
-              Sign Up
-            </Link>
+          <div className="hidden lg:flex items-center gap-4 font-epilogue border-l border-gray-100 pl-6 ml-4">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="flex items-center gap-2 text-[#515B6F] hover:text-Primary transition-all font-bold"
+                >
+                  <LayoutDashboard size={20} />
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="bg-[#FF6550]/10 text-[#FF6550] px-6 py-2.5 rounded-[4px] hover:bg-[#FF6550]/20 transition-all font-bold flex items-center gap-2"
+                >
+                  <LogOut size={18} />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-Primary font-bold px-6 py-3 hover:opacity-80 transition-opacity"
+                >
+                  Login
+                </Link>
+                <div className="w-[1px] h-8 bg-gray-100 mx-2"></div>
+                <Link
+                  to="/signup"
+                  className="bg-Primary text-white px-8 py-3 rounded-[4px] hover:bg-[#3b36c4] shadow-lg shadow-[#4640de]/20 transition-all font-bold"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger Menu */}
@@ -168,28 +201,56 @@ const Navbar = () => {
                     Browse Companies
                   </Link>
                 </motion.div>
+                {isAuthenticated && (
+                  <motion.div variants={itemVariants}>
+                    <Link
+                      to="/dashboard"
+                      onClick={toggleMenu}
+                      className="hover:text-Primary transition-all block py-2 border-b border-gray-50 text-[20px] font-bold"
+                    >
+                      Dashboard
+                    </Link>
+                  </motion.div>
+                )}
               </div>
 
               {/* Mobile Auth Buttons */}
               <div className="mt-auto flex flex-col gap-4 pt-8 border-t border-gray-100">
-                <motion.div variants={itemVariants}>
-                  <Link
-                    to="/login"
-                    onClick={toggleMenu}
-                    className="text-Primary font-bold text-center block py-4 text-[20px]"
-                  >
-                    Login
-                  </Link>
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <Link
-                    to="/signup"
-                    onClick={toggleMenu}
-                    className="bg-Primary text-white text-center font-bold block py-4 rounded-[4px] shadow-lg shadow-[#4640de]/20"
-                  >
-                    Sign Up
-                  </Link>
-                </motion.div>
+                {isAuthenticated ? (
+                  <motion.div variants={itemVariants}>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        toggleMenu();
+                      }}
+                      className="w-full bg-[#FF6550]/10 text-[#FF6550] text-center font-bold py-4 rounded-[4px] flex items-center justify-center gap-2"
+                    >
+                      <LogOut size={20} />
+                      Logout
+                    </button>
+                  </motion.div>
+                ) : (
+                  <>
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        to="/login"
+                        onClick={toggleMenu}
+                        className="text-Primary font-bold text-center block py-4 text-[20px]"
+                      >
+                        Login
+                      </Link>
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        to="/signup"
+                        onClick={toggleMenu}
+                        className="bg-Primary text-white text-center font-bold block py-4 rounded-[4px] shadow-lg shadow-[#4640de]/20"
+                      >
+                        Sign Up
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
               </div>
             </motion.div>
           </>

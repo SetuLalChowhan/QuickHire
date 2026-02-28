@@ -133,3 +133,16 @@ export const submitApplication = asyncHandler(async (req, res) => {
 
   res.status(201).json({ success: true, data: application });
 });
+
+export const getDashboardStats = asyncHandler(async (req, res) => {
+  const totalJobs = await Job.countDocuments();
+  const totalApplications = await Application.countDocuments();
+
+  res.json({
+    success: true,
+    data: {
+      totalJobs,
+      totalApplications,
+    },
+  });
+});

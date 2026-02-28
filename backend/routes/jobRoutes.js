@@ -4,6 +4,7 @@ import {
   getJobById,
   createJob,
   deleteJob,
+  getDashboardStats,
 } from "../controllers/jobController.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
@@ -11,6 +12,7 @@ import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.get("/", getJobs);
+router.get("/stats", protect, authorizeRoles("admin"), getDashboardStats);
 router.get("/:id", getJobById);
 
 // Only Admin Can Create (with Image) & Delete

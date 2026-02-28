@@ -31,7 +31,8 @@ const useMutationClient = ({
 
       // ♻️ Invalidate related queries
       invalidateKeys.forEach((key) => {
-        queryClient.invalidateQueries({ queryKey: [key] });
+        const queryKey = Array.isArray(key) ? key : [key];
+        queryClient.invalidateQueries({ queryKey });
       });
 
       if (externalOnSuccess) externalOnSuccess(res);

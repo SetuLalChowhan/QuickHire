@@ -3,8 +3,11 @@ import AdminLayout from "@/layout/AdminLayout";
 import Layout from "@/layout/Layout";
 import Home from "@/pages/sites/Home";
 import Login from "@/pages/sites/Login";
+import Jobs from "@/pages/sites/Jobs";
+import JobDetail from "@/pages/sites/JobDetail";
 import NotFound from "@/pages/sites/NotFound";
 import { createBrowserRouter } from "react-router-dom";
+import PrivateRoute from "@/components/common/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -16,19 +19,33 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/jobs",
+        element: <Jobs />,
+      },
+      {
+        path: "/jobs/:id",
+        element: <JobDetail />,
+      },
+      {
         path: "/login",
         element: <Login />,
       },
     ],
   },
-  // Admin routes
+  // Admin routes protected by PrivateRoute
   {
     path: "/dashboard",
-    element: <AdminLayout />,
+    element: <PrivateRoute adminOnly={true} />,
     children: [
       {
-        index: true,
-        element: <Dashboard />, // ✅ Fixed typo
+        path: "/dashboard",
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            element: <Dashboard />,
+          },
+        ],
       },
     ],
   },
