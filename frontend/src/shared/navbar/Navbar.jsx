@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@/assets/images/Logo.png";
-import Hamburger from "@/assets/images/icon.png";
+import Hamburger from "@/assets/images/Icon.png";
 import { useSelector, useDispatch } from "react-redux";
 import { selectIsAuthenticated, clearAuth } from "@/redux/slices/authSlice";
 
