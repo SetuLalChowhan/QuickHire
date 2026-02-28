@@ -24,6 +24,9 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String, // Path to the uploaded file
+    },
   },
   { timestamps: true },
 );

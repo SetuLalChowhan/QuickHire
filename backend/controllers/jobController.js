@@ -9,8 +9,36 @@ const asyncHandler = (fn) => (req, res, next) => {
 };
 
 export const getJobs = asyncHandler(async (req, res) => {
-  const jobs = await Job.find().sort({ createdAt: -1 });
-  res.json({ success: true, data: jobs });
+  const { search, location, category, page = 1 } = req.query;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  // Build Query Object
+  const query = {};
+  if (search) {
+    query.title = { $regex: search, $options: "i" }; // Search by title/name
+  }
+  if (location) {
+    query.location = { $regex: location, $options: "i" };
+  }
+  if (category) {
+    query.category = { $regex: category, $options: "i" };
+  }
+
+  // Fetch Jobs & Total Count
+  const totalJobs = await Job.countDocuments(query);
+  const jobs = await Job.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  res.json({
+    success: true,
+    totalJobs,
+    totalPages: Math.ceil(totalJobs / limit),
+    currentPage: Number(page),
+    data: jobs,
+  });
 });
 
 export const getJobById = asyncHandler(async (req, res) => {
@@ -32,12 +60,16 @@ export const createJob = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
+  // Get image path if uploaded
+  const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
   const job = await Job.create({
     title,
     company,
     location,
     category,
     description,
+    image: imagePath,
   });
 
   res.status(201).json({ success: true, data: job });
